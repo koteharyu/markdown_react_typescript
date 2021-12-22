@@ -7,8 +7,11 @@ import { Header } from '../components/header'
 import { putMemo } from '../indexeddb/memos'
 import { SaveModal } from '../components/save_modal'
 import { Link } from 'react-router-dom'
+import TestWorker from 'worker-loader!../worker/test.ts'
 
-const { useState } = React
+const { useState, useEffect } = React
+
+const testWorker = new TestWorker()
 
 interface Props {
   text: string
@@ -57,6 +60,17 @@ const Preview = styled.div`
 export const Editor: React.FC<Props> = (props) => {
   const { text, setText } = props
   const [showModal, setShowModal] = useState(false)
+
+  useEffect(() => {
+    testWorker.onmessage = (event) => {
+      console.log("Main thread Received:", event.data)
+    }
+  },[])
+
+  useEffect(() => {
+    testWorker.postMessage(text)
+  }, [text])
+
   return (
     <>
       <HeaderArea>
