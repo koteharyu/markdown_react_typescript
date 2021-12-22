@@ -1,7 +1,14 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Editor } from './pages/editor';
+import { History } from './pages/histroy';
 import { createGlobalStyle } from 'styled-components';
+import {
+  HashRouter as Router,
+  Switch,
+  Route,
+  Redirect
+} from 'react-router-dom'
 
 const GlobalStyle = createGlobalStyle`
   body * {
@@ -14,7 +21,15 @@ function App() {
   return (
     <>
       <GlobalStyle />
-      <Editor />
+      <Router>
+        <Route exact path="/editor">
+          <Editor />
+        </Route>
+        <Route exact path="/histroy">
+          <History />
+        </Route>
+        <Redirect to="/editor" path="*" />
+      </Router>
     </>
   );
 }
