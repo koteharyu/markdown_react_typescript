@@ -9,6 +9,8 @@ import {
   Route,
   Redirect
 } from 'react-router-dom'
+import { useStateWithStorage } from './hooks/use_state_with_storage';
+
 
 const GlobalStyle = createGlobalStyle`
   body * {
@@ -16,19 +18,23 @@ const GlobalStyle = createGlobalStyle`
   }
 `
 
+const StorageKey = '/editor:text'
 
 function App() {
+  const [text, setText] = useStateWithStorage("", StorageKey)
   return (
     <>
       <GlobalStyle />
       <Router>
-        <Route exact path="/editor">
-          <Editor />
-        </Route>
-        <Route exact path="/history">
-          <History />
-        </Route>
-        <Redirect to="/editor" path="*" />
+        <Switch>
+          <Route exact path="/editor">
+            <Editor text={text} setText={setText} />
+          </Route>
+          <Route exact path="/history">
+            <History setText={setText} />
+          </Route>
+          <Redirect to="/editor" path="*" />
+        </Switch>
       </Router>
     </>
   );
