@@ -1,17 +1,15 @@
 import * as React from 'react'
 import styled from 'styled-components'
-import { useStateWithStorage } from '../hooks/use_state_with_storage'
-import ReactMarkdown from 'react-markdown'
 import { Button } from '../components/button'
 import { Header } from '../components/header'
 import { putMemo } from '../indexeddb/memos'
 import { SaveModal } from '../components/save_modal'
 import { Link } from 'react-router-dom'
-import TestWorker from 'worker-loader!../worker/test.ts'
+import ConvertMarkdownWorker from 'worker-loader!../worker/convert_markdown_worker'
 
 const { useState, useEffect } = React
 
-const testWorker = new TestWorker()
+const convertMarkdownWorker = new ConvertMarkdownWorker()
 
 interface Props {
   text: string
@@ -60,15 +58,16 @@ const Preview = styled.div`
 export const Editor: React.FC<Props> = (props) => {
   const { text, setText } = props
   const [showModal, setShowModal] = useState(false)
+  const [html, setHtml] = useState<string>("")
 
   useEffect(() => {
-    testWorker.onmessage = (event) => {
-      console.log("Main thread Received:", event.data)
+    convertMarkdownWorker.onmessage = (event) => {
+      setHtml(event.data.html)
     }
   },[])
 
   useEffect(() => {
-    testWorker.postMessage(text)
+    convertMarkdownWorker.postMessage(text)
   }, [text])
 
   return (
@@ -91,7 +90,7 @@ export const Editor: React.FC<Props> = (props) => {
           value={text}
         />
         <Preview>
-          <ReactMarkdown>{text}</ReactMarkdown>
+          <div dangerouslySetInnerHTML={{ __html: html }} />
         </Preview>
       </Wrapper>
       {showModal && (
