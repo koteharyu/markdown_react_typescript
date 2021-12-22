@@ -1,7 +1,7 @@
 import * as React from 'react'
 import styled from 'styled-components'
 
-const HeaderWrapper = styled.div`
+const HeaderWrapper = styled.header`
   align-content: center;
   display: flex;
   height: 2rem;
@@ -19,6 +19,7 @@ const HeaderControl = styled.div`
   display: flex;
   height: 2rem;
   justify-content: center;
+
   & > * {
     margin-left: 0.5rem;
   }

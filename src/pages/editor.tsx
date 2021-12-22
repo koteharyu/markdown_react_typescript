@@ -14,6 +14,9 @@ const StorageKey = 'pages/editor:text'
 
 const Wrapper = styled.div`
   bottom: 0;
+  left: 0;
+  position: fixed;
+  right: 0;
   top: 3rem;
 `;
 
